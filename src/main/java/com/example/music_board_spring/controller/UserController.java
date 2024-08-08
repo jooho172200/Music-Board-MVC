@@ -7,6 +7,7 @@ import com.example.music_board_spring.model.dto.UserRegistrationDTO;
 import com.example.music_board_spring.model.dto.UserUpdateDTO;
 import com.example.music_board_spring.model.entity.Users;
 import com.example.music_board_spring.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,35 +18,33 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
-    @Autowired
-    public UserController(UserService userService){
-        this.userService = userService;
-    }
 
     //회원가입
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserRegistrationDTO registrationDTO) {
         try {
-            Users user = userService.registerUser(registrationDTO.toUser());
+            Users user = userService.registerUser(registrationDTO);
             return ResponseEntity.ok(user);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    //로그인
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody UserLoginDTO loginDTO) {
-        try {
-            Users user = userService.authenticateUser(loginDTO.getUsername(), loginDTO.getPassword());
-            return ResponseEntity.ok(user);
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }
-    }
+//    //spring security에서 제공하는 기능
+//
+//    //로그인
+//    @PostMapping("/login")
+//    public ResponseEntity<?> loginUser(@RequestBody UserLoginDTO loginDTO) {
+//        try {
+//            Users user = userService.authenticateUser(loginDTO.getUsername(), loginDTO.getPassword());
+//            return ResponseEntity.ok(user);
+//        } catch (BadCredentialsException e) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+//        }
+//    }
 
     //id로 사용자 찾기
     @GetMapping("/{id}")

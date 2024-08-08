@@ -2,10 +2,11 @@ package com.example.music_board_spring.service;
 
 
 import com.example.music_board_spring.exception.UserNotFoundException;
+import com.example.music_board_spring.model.dto.UserRegistrationDTO;
 import com.example.music_board_spring.model.dto.UserUpdateDTO;
 import com.example.music_board_spring.model.entity.Users;
 import com.example.music_board_spring.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,42 +15,49 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
 
+    private final UserRepository userRepository;
     //spring security에서 제공하는 기능
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     //회원 등록
-    public Users registerUser(Users users){
+    public Users registerUser(UserRegistrationDTO userRegistrationDTO){
         // 1. 유저네임 중복 체크
-        if (userRepository.findByUsername(users.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(userRegistrationDTO.getUsername()).isPresent()) {
             throw new RuntimeException("이미 사용 중인 유저네임입니다.");
         }
 
         // 2. 이메일 중복 체크
-        if (userRepository.findByEmail(users.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(userRegistrationDTO.getEmail()).isPresent()) {
             throw new RuntimeException("이미 사용 중인 이메일입니다.");
         }
 
-        // 3. 비밀번호 암호화
-        users.setPasswordHash(passwordEncoder.encode(users.getPasswordHash()));
+        // 3. 사용자 정보 생성
+        Users user = new Users();
+        user.setUsername(userRegistrationDTO.getUsername());
+        user.setEmail(userRegistrationDTO.getEmail());
+        user.setPasswordHash(passwordEncoder.encode(userRegistrationDTO.getPassword()));
+        user.setProfilePicture(userRegistrationDTO.getProfilePicture());
+        user.setActive(true);
+        user.setRoles(List.of("ROLE_USER"));
+
 
         // 4. 사용자 저장
-        return userRepository.save(users);
+        return userRepository.save(user);
     }
 
-    //로그인 기능
-    public Users authenticateUser(String username, String password) throws BadCredentialsException {
-        Optional<Users> optionalUser = userRepository.findByUsername(username);
-        if (optionalUser.isPresent() && passwordEncoder.matches(password, optionalUser.get().getPasswordHash())) {
-            return optionalUser.get();
-        } else {
-            throw new BadCredentialsException("유저네임이나 비밀번호를 틀렸습니다.");
-        }
-    }
+//  spring security에서 제공하는 기능
+//    //로그인 기능
+//    public Users authenticateUser(String username, String password) throws BadCredentialsException {
+//        Optional<Users> optionalUser = userRepository.findByUsername(username);
+//        if (optionalUser.isPresent() && passwordEncoder.matches(password, optionalUser.get().getPasswordHash())) {
+//            return optionalUser.get();
+//        } else {
+//            throw new BadCredentialsException("유저네임이나 비밀번호를 틀렸습니다.");
+//        }
+//    }
 
     //아이디로 회원 찾기
     public Optional<Users> findById(Integer id) {
