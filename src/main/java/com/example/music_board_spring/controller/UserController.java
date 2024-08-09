@@ -8,10 +8,8 @@ import com.example.music_board_spring.model.dto.UserUpdateDTO;
 import com.example.music_board_spring.model.entity.Users;
 import com.example.music_board_spring.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

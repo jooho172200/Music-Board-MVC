@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 @Getter
 @Setter
-@ToString
 public class PostDTO {
     private Long postId;
     private Integer userId;
@@ -16,7 +15,6 @@ public class PostDTO {
     private String title;
     private String content;
     private String postType;
-    private BigDecimal price;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String filename;
