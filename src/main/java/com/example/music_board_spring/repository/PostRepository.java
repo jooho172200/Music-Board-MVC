@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository <Posts, Long> {
 
     @Query("SELECT p FROM Posts p WHERE p.user.userId = :userId")
-    List<Posts> findByUserId(Integer userId, Pageable pageable);
+    List<Posts> findByUserId(Long userId, Pageable pageable);
 
     @Query("SELECT p FROM Posts p WHERE p.postType = :boardName AND p.postId = :postId")
     Optional<Posts> findByBoardNameandId(String boardName, Long postId);

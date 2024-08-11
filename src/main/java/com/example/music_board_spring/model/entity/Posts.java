@@ -2,6 +2,7 @@ package com.example.music_board_spring.model.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,10 +41,10 @@ public class Posts {
     private BigDecimal price;
 
     @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
+    private Timestamp createdAt;
 
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private LocalDateTime updatedAt;
+    private Timestamp updatedAt;
 
     @Column(name = "filename")
     private String filename;

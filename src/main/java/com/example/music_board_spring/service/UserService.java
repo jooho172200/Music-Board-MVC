@@ -60,8 +60,8 @@ public class UserService {
 //    }
 
     //아이디로 회원 찾기
-    public Optional<Users> findById(Integer id) {
-        return userRepository.findById(id);
+    public Optional<Users> findById(Long userId) {
+        return userRepository.findById(userId);
     }
 
     //유저네임으로 회원 찾기
@@ -75,9 +75,9 @@ public class UserService {
     }
 
     //회원 정보 수정
-    public Users updateUserInfo(Integer id, UserUpdateDTO updateDTO) {
+    public Users updateUserInfo(Long userId, UserUpdateDTO updateDTO) {
         // 사용자 ID로 사용자 정보를 조회
-        return userRepository.findById(id)
+        return userRepository.findById(userId)
                 .map(user -> {  //user 객체에 저장된 값을 변환, user=람다 표현식 매개변수
                     boolean isChanged = false;  // 변경 사항이 있는지 확인하는 플래그
 
@@ -129,7 +129,7 @@ public class UserService {
                     return isChanged ? userRepository.save(user) : user;
                 })
                 // 사용자를 찾을 수 없는 경우 예외 발생
-                .orElseThrow(() -> new UserNotFoundException("ID가 " + id + "인 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException("ID가 " + userId + "인 사용자를 찾을 수 없습니다."));
     }
 
     //이메일 유효성 확인
@@ -151,28 +151,28 @@ public class UserService {
     }
 
     //회원 삭제
-    public void deleteUser(Integer id) {
-        userRepository.deleteById(id);
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
     }
 
     //회원 활성화
-    public Users activateUser(Integer id) {
-        return userRepository.findById(id)
+    public Users activateUser(Long userId) {
+        return userRepository.findById(userId)
                 .map(user -> {
                     user.setActive(true);
                     return userRepository.save(user);
                 })
-                .orElseThrow(() -> new UserNotFoundException("id: " + id + "인 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException("id: " + userId + "인 사용자를 찾을 수 없습니다."));
     }
 
     //회원 비활성화
-    public Users deactivateUser(Integer id) {
-        return userRepository.findById(id)
+    public Users deactivateUser(Long userId) {
+        return userRepository.findById(userId)
                 .map(user -> {
                     user.setActive(false);
                     return userRepository.save(user);
                 })
-                .orElseThrow(() -> new UserNotFoundException("id: " + id + "인 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException("id: " + userId + "인 사용자를 찾을 수 없습니다."));
     }
 
 }

@@ -1,7 +1,6 @@
 package com.example.music_board_spring.controller;
 
 import com.example.music_board_spring.model.dto.PostDTO;
-import com.example.music_board_spring.model.entity.Posts;
 import com.example.music_board_spring.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -55,7 +54,7 @@ public class PostController {
 
     //유저 작성 게시물 가져오기
     @GetMapping("/posts/user/{userId}")
-    public ResponseEntity<List<PostDTO>> getPostsByUserName(@PathVariable String boardName, @PathVariable Integer userId, Pageable pageable){
+    public ResponseEntity<List<PostDTO>> getPostsByUserName(@PathVariable String boardName, @PathVariable Long userId, Pageable pageable){
         List<PostDTO> postDTOS = postService.getPostsByUserId(boardName, userId, pageable);
         return ResponseEntity.ok(postDTOS);
     }

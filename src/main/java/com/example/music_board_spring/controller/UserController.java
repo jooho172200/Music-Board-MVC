@@ -46,11 +46,11 @@ public class UserController {
 
     //id로 사용자 찾기
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Integer id) {
+    public ResponseEntity<?> getUserById(@PathVariable Long userId) {
         try {
-            return userService.findById(id)
+            return userService.findById(userId)
                     .map(ResponseEntity::ok)
-                    .orElseThrow(() -> new UserNotFoundException("ID가 " + id + "인 사용자를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new UserNotFoundException("ID가 " + userId + "인 사용자를 찾을 수 없습니다."));
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -65,9 +65,9 @@ public class UserController {
 
     //유저 정보 수정
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Integer id, @RequestBody UserUpdateDTO updateDTO) {
+    public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody UserUpdateDTO updateDTO) {
         try {
-            Users updatedUser = userService.updateUserInfo(id, updateDTO);
+            Users updatedUser = userService.updateUserInfo(userId, updateDTO);
             return ResponseEntity.ok(updatedUser);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -78,9 +78,9 @@ public class UserController {
 
     //사용자 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
         try {
-            userService.deleteUser(id);
+            userService.deleteUser(userId);
             return ResponseEntity.ok("사용자가 성공적으로 삭제되었습니다.");
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -89,9 +89,9 @@ public class UserController {
 
     //사용자 활성화
     @PutMapping("/{id}/activate")
-    public ResponseEntity<?> activateUser(@PathVariable Integer id) {
+    public ResponseEntity<?> activateUser(@PathVariable Long userId) {
         try {
-            Users activatedUser = userService.activateUser(id);
+            Users activatedUser = userService.activateUser(userId);
             return ResponseEntity.ok(activatedUser);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -100,9 +100,9 @@ public class UserController {
 
     //사용자 비활성화
     @PutMapping("/{id}/deactivate")
-    public ResponseEntity<?> deactivateUser(@PathVariable Integer id) {
+    public ResponseEntity<?> deactivateUser(@PathVariable Long userId) {
         try {
-            Users deactivatedUser = userService.deactivateUser(id);
+            Users deactivatedUser = userService.deactivateUser(userId);
             return ResponseEntity.ok(deactivatedUser);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

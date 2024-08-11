@@ -13,8 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -113,7 +113,7 @@ public class PostService {
 
     //유저 작성글 불러오기
     @Transactional(readOnly = true)
-    public List<PostDTO> getPostsByUserId(String boardType, Integer userId, Pageable pageable) {
+    public List<PostDTO> getPostsByUserId(String boardType, Long userId, Pageable pageable) {
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("존재하지 않는 유저입니다."));
         List<Posts> posts = postRepository.findByUserId(user.getUserId(), pageable);
