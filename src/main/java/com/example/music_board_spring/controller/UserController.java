@@ -45,7 +45,7 @@ public class UserController {
 //    }
 
     //id로 사용자 찾기
-    @GetMapping("/{id}")
+    @GetMapping("/{userid}")
     public ResponseEntity<?> getUserById(@PathVariable Long userId) {
         try {
             return userService.findById(userId)
@@ -64,7 +64,7 @@ public class UserController {
     }
 
     //유저 정보 수정
-    @PutMapping("/{id}")
+    @PutMapping("/{userid}")
     public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody UserUpdateDTO updateDTO) {
         try {
             Users updatedUser = userService.updateUserInfo(userId, updateDTO);
@@ -77,7 +77,7 @@ public class UserController {
     }
 
     //사용자 삭제
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{userid}")
     public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
         try {
             userService.deleteUser(userId);
@@ -88,7 +88,7 @@ public class UserController {
     }
 
     //사용자 활성화
-    @PutMapping("/{id}/activate")
+    @PutMapping("/{userid}/activate")
     public ResponseEntity<?> activateUser(@PathVariable Long userId) {
         try {
             Users activatedUser = userService.activateUser(userId);
@@ -99,7 +99,7 @@ public class UserController {
     }
 
     //사용자 비활성화
-    @PutMapping("/{id}/deactivate")
+    @PutMapping("/{userid}/deactivate")
     public ResponseEntity<?> deactivateUser(@PathVariable Long userId) {
         try {
             Users deactivatedUser = userService.deactivateUser(userId);

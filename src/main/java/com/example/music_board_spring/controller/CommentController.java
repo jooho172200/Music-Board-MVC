@@ -44,7 +44,7 @@ public class CommentController {
     }
 
     //유저 아이디로 댓글 불러오기
-    @GetMapping("/user/{userId}")
+    @GetMapping("/users/{userId}")
     public ResponseEntity<?> getUserComments(@PathVariable Long userId, Pageable pageable){
         List<CommentDTO> commentDTOS = commentService.getUserComments(userId, pageable);
         return ResponseEntity.ok(commentDTOS);
