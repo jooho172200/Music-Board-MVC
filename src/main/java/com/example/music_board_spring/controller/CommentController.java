@@ -5,6 +5,7 @@ import com.example.music_board_spring.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,15 +25,15 @@ public class CommentController {
 
     //댓글 삭제
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<?> deleteComment(@PathVariable Long postId, @PathVariable Long commentId){
-        commentService.deleteComment(commentId);
+    public ResponseEntity<?> deleteComment(@PathVariable Long postId, @PathVariable Long commentId, Authentication authentication){
+        commentService.deleteComment(commentId, authentication);
         return ResponseEntity.noContent().build();
     }
 
     //댓글 수정
     @PutMapping("/{commentId}")
-    public ResponseEntity<?> updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentDTO commentDTO){
-        CommentDTO updatedCommentDto = commentService.updateComment(commentId, commentDTO);
+    public ResponseEntity<?> updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentDTO commentDTO, Authentication authentication){
+        CommentDTO updatedCommentDto = commentService.updateComment(commentId, commentDTO, authentication);
         return ResponseEntity.ok(updatedCommentDto);
     }
 

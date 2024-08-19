@@ -51,4 +51,7 @@ public class Posts {
 
     @Column(name = "filepath")
     private String filepath;
+
+    @Column(name = "report_count")
+    private Integer reportCount;
 }

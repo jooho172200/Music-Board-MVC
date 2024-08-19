@@ -9,7 +9,10 @@ import com.example.music_board_spring.repository.PostRepository;
 import com.example.music_board_spring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -23,6 +26,7 @@ public class CommentService {
     private final UserRepository userRepository;
 
     //댓글 게시
+    @Transactional
     public CommentDTO createComment(Long postId, Long userId, String content){
         Posts post = postRepository.findById(postId)
                 .orElseThrow(()-> new RuntimeException("게시글을 찾을 수 없습니다."));
@@ -42,7 +46,9 @@ public class CommentService {
     }
 
     //댓글 삭제
-    public void deleteComment(Long commentId){
+    @PreAuthorize("hasRole('ADMIN') or #comment.user.userId == principal.userId")
+    @Transactional
+    public void deleteComment(Long commentId, Authentication authentication){
         Comments comment = commentRepository.findById(commentId)
                 .orElseThrow(()-> new RuntimeException("댓글을 찾을 수 없습니다."));
 
@@ -50,7 +56,9 @@ public class CommentService {
     }
 
     //댓글 수정
-    public CommentDTO updateComment(Long commentId, CommentDTO commentDTO){
+    @PreAuthorize("hasRole('ADMIN') or #comment.user.userId == principal.userId")
+    @Transactional
+    public CommentDTO updateComment(Long commentId, CommentDTO commentDTO, Authentication authentication){
         Comments comment = commentRepository.findById(commentId)
                 .orElseThrow(()->new RuntimeException("댓글을 찾을 수 없습니다."));
 

@@ -7,22 +7,26 @@ import com.example.music_board_spring.model.dto.UserUpdateDTO;
 import com.example.music_board_spring.model.entity.Users;
 import com.example.music_board_spring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     //spring security에서 제공하는 기능
     private final PasswordEncoder passwordEncoder;
 
     //회원 등록
+    @Transactional
     public Users registerUser(UserRegistrationDTO userRegistrationDTO){
         // 1. 유저네임 중복 체크
         if (userRepository.findByUsername(userRegistrationDTO.getUsername()).isPresent()) {
@@ -41,7 +45,7 @@ public class UserService {
         user.setPasswordHash(passwordEncoder.encode(userRegistrationDTO.getPassword()));
         user.setProfilePicture(userRegistrationDTO.getProfilePicture());
         user.setActive(true);
-        user.setRoles(List.of("ROLE_USER"));
+        user.setRoles(List.of("USER"));
 
 
         // 4. 사용자 저장
@@ -75,6 +79,7 @@ public class UserService {
     }
 
     //회원 정보 수정
+    @Transactional
     public Users updateUserInfo(Long userId, UserUpdateDTO updateDTO) {
         // 사용자 ID로 사용자 정보를 조회
         return userRepository.findById(userId)
@@ -151,6 +156,7 @@ public class UserService {
     }
 
     //회원 삭제
+    @Transactional
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }
@@ -173,6 +179,12 @@ public class UserService {
                     return userRepository.save(user);
                 })
                 .orElseThrow(() -> new UserNotFoundException("id: " + userId + "인 사용자를 찾을 수 없습니다."));
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 
 }

@@ -10,10 +10,11 @@ import com.example.music_board_spring.repository.PostRepository;
 import com.example.music_board_spring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,24 +34,29 @@ public class PostService {
     }
 
     //글 삭제
+    @PreAuthorize("hasRole('ADMIN') or #post.user.userId == principal.userId")
     @Transactional
-    public void deletePost(String boardName, Long postId){
+    public void deletePost(String boardName, Long postId, Authentication authentication){
         Posts post = postRepository.findByBoardNameandId(boardName, postId)
                 .orElseThrow(()-> new RuntimeException("게시글을 찾을 수 없습니다. "));
+
+        Users currentUser = (Users) authentication.getPrincipal();
+
         postRepository.delete(post);
     }
 
     //글 수정
+    @PreAuthorize("hasRole('ADMIN') or #post.user.userId == principal.userId")
     @Transactional
-    public <T extends PostDTO> T updatePost(Long postId, T postDTO){
+    public <T extends PostDTO> T updatePost(Long postId, T postDTO, Authentication authentication){
         Posts post = postRepository.findById(postId)
                 .orElseThrow(()-> new RuntimeException("게시글을 찾을 수 없습니다. "));
 
-        updatePostFromDto(post, postDTO);
+        Users currentUser = (Users) authentication.getPrincipal();
 
+        updatePostFromDto(post, postDTO);
         Posts updatedPost = postRepository.save(post);
         return (T) convertToDto(updatedPost, postDTO.getClass());
-
     }
 
     //DTO를 엔티티로

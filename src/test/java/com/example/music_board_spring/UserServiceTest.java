@@ -1,6 +1,5 @@
 package com.example.music_board_spring;
 
-import com.example.music_board_spring.exception.UserNotFoundException;
 import com.example.music_board_spring.model.dto.UserRegistrationDTO;
 import com.example.music_board_spring.model.entity.Users;
 import com.example.music_board_spring.repository.UserRepository;
@@ -12,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;

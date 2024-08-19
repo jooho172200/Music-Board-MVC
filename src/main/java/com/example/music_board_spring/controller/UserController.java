@@ -2,7 +2,6 @@ package com.example.music_board_spring.controller;
 
 
 import com.example.music_board_spring.exception.UserNotFoundException;
-import com.example.music_board_spring.model.dto.UserLoginDTO;
 import com.example.music_board_spring.model.dto.UserRegistrationDTO;
 import com.example.music_board_spring.model.dto.UserUpdateDTO;
 import com.example.music_board_spring.model.entity.Users;

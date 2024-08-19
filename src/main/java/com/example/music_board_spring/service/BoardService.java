@@ -6,6 +6,7 @@ import com.example.music_board_spring.model.entity.Boards;
 import com.example.music_board_spring.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ public class BoardService {
     private BoardRepository boardRepository;
 
     //게시판 생성
+    @Transactional
     public Boards createBoard(Boards boards){
         if (boardRepository.existsByBoardName(boards.getBoardName())) {
             throw new BoardAlreadyExistsException("이미 같은 이름의 게시판이 존재합니다.");
@@ -25,6 +27,7 @@ public class BoardService {
     }
 
     //게시판 삭제
+    @Transactional
     public void deleteBoard(String boardname) {
         Boards board = boardRepository.findByBoardName(boardname)
                 .orElseThrow(()-> new RuntimeException(boardname+" 게시판을 찾을 수 없습니다."));
@@ -33,6 +36,7 @@ public class BoardService {
     }
 
     //게시판 수정
+    @Transactional
     public Boards updateBoard(String oldBoardName, String newBoardName){
         Boards board = boardRepository.findByBoardName(oldBoardName)
                 .orElseThrow(()-> new RuntimeException(oldBoardName+"게시판을 찾을 수 없습니다."));

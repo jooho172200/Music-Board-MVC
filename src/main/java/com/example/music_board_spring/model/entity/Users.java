@@ -86,6 +86,6 @@ public class Users implements UserDetails {
     }
     
     public boolean isAdmin() {
-        return roles.contains("ROLE_ADMIN");
+        return roles.contains("ADMIN");
     }
 }

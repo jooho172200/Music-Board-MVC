@@ -13,6 +13,7 @@ public class Comments {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comment_id")
     private Long commentId;
 
     @ManyToOne
@@ -31,4 +32,7 @@ public class Comments {
 
     @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp updatedAt;
+
+    @Column(name = "report_count")
+    private Integer reportCount;
 }

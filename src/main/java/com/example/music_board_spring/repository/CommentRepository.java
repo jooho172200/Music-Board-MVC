@@ -17,4 +17,7 @@ public interface CommentRepository extends JpaRepository <Comments, Long> {
 
     @Query("SELECT c FROM Comments c WHERE c.post.postId = :postId")
     List<Comments> findByPostId(Long postId, Pageable pageable);
+
+    @Query("SELECT c from Comments c WHERE c.reportCount >= :count")
+    List<Comments> findByReportCount(Integer count);
 }

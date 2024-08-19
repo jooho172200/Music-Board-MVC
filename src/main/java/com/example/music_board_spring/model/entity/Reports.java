@@ -22,6 +22,13 @@ public class Reports {
     private Posts post;
 
     @ManyToOne
+    @JoinColumn(name = "comment_id", referencedColumnName = "comment_id")
+    private Comments comment;
+
+    @Column(name = "report_type")
+    private String reportType;
+
+    @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private Users user;
 

@@ -1,10 +1,15 @@
 package com.example.music_board_spring.controller;
 
 import com.example.music_board_spring.model.dto.PostDTO;
+import com.example.music_board_spring.model.entity.Users;
 import com.example.music_board_spring.service.PostService;
+import com.example.music_board_spring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +19,7 @@ import java.util.List;
 @RequestMapping("/board/{boardName}")
 public class PostController {
     private final PostService postService;
+    private final UserService userService;
 
     //게시글 작성
     @PostMapping("/posts")
@@ -25,16 +31,16 @@ public class PostController {
 
     //게시글 삭제
     @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable String boardName, @PathVariable Long postId){
-        postService.deletePost(boardName, postId);
+    public ResponseEntity<?> deletePost(@PathVariable String boardName, @PathVariable Long postId, Authentication authentication){
+        postService.deletePost(boardName, postId, authentication);
         return ResponseEntity.ok().build();
     }
 
     //게시글 수정
     @PutMapping("/posts/{postId}")
-    public ResponseEntity<?> updatePost(@PathVariable String boardName, @PathVariable Long postId, @RequestBody PostDTO postDTO){
+    public ResponseEntity<?> updatePost(@PathVariable String boardName, @PathVariable Long postId, @RequestBody PostDTO postDTO, Authentication authentication){
         postDTO.setPostType(boardName);
-        PostDTO updatedPost = postService.updatePost(postId, postDTO);
+        PostDTO updatedPost = postService.updatePost(postId, postDTO, authentication);
         return ResponseEntity.ok(updatedPost);
     }
 

@@ -22,4 +22,7 @@ public interface PostRepository extends JpaRepository <Posts, Long> {
 
     @Query("SELECT p FROM Posts p WHERE p.board.boardName = :boardName")
     List<Posts> findAllByBoardName(String boardName, Pageable pageable);
+
+    @Query("SELECT p FROM Posts p WHERE p.reportCount >= : count")
+    List<Posts> findByReportCount(int count);
 }
