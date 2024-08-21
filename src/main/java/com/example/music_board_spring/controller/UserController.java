@@ -9,11 +9,13 @@ import com.example.music_board_spring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
@@ -21,12 +23,14 @@ public class UserController {
 
     //회원가입
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserRegistrationDTO registrationDTO) {
+    public String registerUser(@ModelAttribute UserRegistrationDTO registrationDTO, Model model) {
         try {
             Users user = userService.registerUser(registrationDTO);
-            return ResponseEntity.ok(user);
+            model.addAttribute("user", user);
+            return "userDetail";
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            model.addAttribute("error", e.getMessage());
+            return "registerForm";
         }
     }
 
@@ -45,66 +49,85 @@ public class UserController {
 
     //id로 사용자 찾기
     @GetMapping("/{userid}")
-    public ResponseEntity<?> getUserById(@PathVariable Long userId) {
+    public String getUserById(@PathVariable Long userId, Model model) {
         try {
-            return userService.findById(userId)
-                    .map(ResponseEntity::ok)
+            Users user = userService.findById(userId)
                     .orElseThrow(() -> new UserNotFoundException("ID가 " + userId + "인 사용자를 찾을 수 없습니다."));
+            model.addAttribute("user", user);
+
+            return "userDetail";
+
         } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+            model.addAttribute("error", e.getMessage());
+            return "error";
         }
     }
 
     //모든 사용자 목록
     @GetMapping
-    public ResponseEntity<List<Users>> getAllUsers() {
+    public String getAllUsers(Model model) {
         List<Users> users = userService.findAll();
-        return ResponseEntity.ok(users);
+        model.addAttribute("users", users);
+        return "userList";
     }
 
     //유저 정보 수정
     @PutMapping("/{userid}")
-    public ResponseEntity<?> updateUser(@PathVariable Long userId, @RequestBody UserUpdateDTO updateDTO) {
+    public String updateUser(@PathVariable Long userId, @ModelAttribute UserUpdateDTO updateDTO, Model model) {
         try {
             Users updatedUser = userService.updateUserInfo(userId, updateDTO);
-            return ResponseEntity.ok(updatedUser);
+            model.addAttribute("user", updatedUser);
+
+            return "userDetail";
+
         } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            model.addAttribute("error", e.getMessage());
+            return "error";
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            model.addAttribute("error", e.getMessage());
+            return "updateForm";
         }
     }
 
     //사용자 삭제
     @DeleteMapping("/{userid}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
+    public String deleteUser(@PathVariable Long userId, Model model) {
         try {
             userService.deleteUser(userId);
-            return ResponseEntity.ok("사용자가 성공적으로 삭제되었습니다.");
+            return "redirect:/users";
         } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+            model.addAttribute("error", e.getMessage());
+            return "error";
         }
     }
 
     //사용자 활성화
     @PutMapping("/{userid}/activate")
-    public ResponseEntity<?> activateUser(@PathVariable Long userId) {
+    public String activateUser(@PathVariable Long userId, Model model) {
         try {
             Users activatedUser = userService.activateUser(userId);
-            return ResponseEntity.ok(activatedUser);
+            model.addAttribute("user", activatedUser);
+            return "userDetail";
+
         } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            model.addAttribute("error", e.getMessage());
+            return "error";
         }
     }
 
     //사용자 비활성화
     @PutMapping("/{userid}/deactivate")
-    public ResponseEntity<?> deactivateUser(@PathVariable Long userId) {
+    public String deactivateUser(@PathVariable Long userId, Model model) {
         try {
             Users deactivatedUser = userService.deactivateUser(userId);
-            return ResponseEntity.ok(deactivatedUser);
+            model.addAttribute("user", deactivatedUser);
+            return "userDetail";
+
         } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            model.addAttribute("error", e.getMessage());
+            return "error";
         }
     }
 

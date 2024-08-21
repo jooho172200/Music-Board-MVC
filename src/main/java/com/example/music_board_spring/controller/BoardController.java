@@ -3,54 +3,63 @@ package com.example.music_board_spring.controller;
 
 import com.example.music_board_spring.model.entity.Boards;
 import com.example.music_board_spring.service.BoardService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/boards")
+@RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
 
-    @Autowired
-    public BoardController(BoardService boardService){
-        this.boardService = boardService;
-    }
-
     //게시판 생성
     @PostMapping
-    public ResponseEntity<?> createBoard(@RequestBody Boards board){
-        return ResponseEntity.ok(boardService.createBoard(board));
+    public String createBoard(@RequestBody Boards board, Model model){
+        Boards createdBoard = boardService.createBoard(board);
+        model.addAttribute("board", board);
+
+        return "boardDetail";
     }
 
     //게시판 삭제
     @DeleteMapping("/{boardName}")
-    public ResponseEntity<?> deleteBoard(@PathVariable String boardName){
+    public String deleteBoard(@PathVariable String boardName, Model model){
         boardService.deleteBoard(boardName);
-        return ResponseEntity.ok().build();
+        return "redirect:/boards";
     }
 
     //게시판 수정
     @PutMapping("/{boardName}")
-    public ResponseEntity<?> updateBoard(@PathVariable String oldBoardName, @RequestBody String newBoardName){
-        return ResponseEntity.ok(boardService.updateBoard(oldBoardName, newBoardName));
+    public String updateBoard(@PathVariable String oldBoardName, @RequestParam String newBoardName,Model model){
+        Boards updatedBoard = boardService.updateBoard(oldBoardName, newBoardName);
+        model.addAttribute("board", updatedBoard);
+        return "boardDetail";
     }
 
     //게시판 이름으로 게시판 조회
     @GetMapping("/{boardName}")
-    public ResponseEntity<?> findByBoardName(@PathVariable String boardName){
-        return boardService.findbyBoardName(boardName)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public String findByBoardName(@PathVariable String boardName, Model model){
+        Boards board = boardService.findbyBoardName(boardName)
+                        .orElseThrow(()-> new RuntimeException("게시판을 찾을 수 없습니다. "));
+
+        model.addAttribute("board", board);
+        return "boardDetail";
     }
 
     //전체 게시판 조회
     @GetMapping
-    public ResponseEntity<List<Boards>> getAllBoards(){
-        return ResponseEntity.ok(boardService.getAllBoards());
+    public String getAllBoards(Model model){
+        List<Boards> boards = boardService.getAllBoards();
+        model.addAttribute("boards", boards);
+
+        return "boardList";
     }
 
 }

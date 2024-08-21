@@ -6,11 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/posts/{postId}/comments")
 public class CommentController {
@@ -18,37 +20,41 @@ public class CommentController {
 
     //댓글 게시
     @PostMapping
-    public ResponseEntity<?> createComment(@PathVariable Long postId, @RequestParam Long userId, @RequestBody String content){
+    public String createComment(@PathVariable Long postId, @RequestParam Long userId, @RequestParam String content, Model model){
         CommentDTO commentDTO = commentService.createComment(postId, userId, content);
-        return ResponseEntity.ok(commentDTO);
+        model.addAttribute("comment", commentDTO);
+        return "commentDetail";
     }
 
     //댓글 삭제
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<?> deleteComment(@PathVariable Long postId, @PathVariable Long commentId, Authentication authentication){
+    public String deleteComment(@PathVariable Long postId, @PathVariable Long commentId, Authentication authentication){
         commentService.deleteComment(commentId, authentication);
-        return ResponseEntity.noContent().build();
+        return "redirect:/posts/" + postId + "comments";
     }
 
     //댓글 수정
     @PutMapping("/{commentId}")
-    public ResponseEntity<?> updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentDTO commentDTO, Authentication authentication){
+    public String updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestParam CommentDTO commentDTO, Authentication authentication, Model model){
         CommentDTO updatedCommentDto = commentService.updateComment(commentId, commentDTO, authentication);
-        return ResponseEntity.ok(updatedCommentDto);
+        model.addAttribute("comment", commentDTO);
+        return "commentDetail";
     }
 
     //모든 댓글 불러오기
     @GetMapping
-    public ResponseEntity<?> getAllComments(@PathVariable Long postId, Pageable pageable){
+    public String getAllComments(@PathVariable Long postId, Pageable pageable, Model model){
         List<CommentDTO> commentDTOS = commentService.getAllComments(postId,pageable);
-        return ResponseEntity.ok(commentDTOS);
+        model.addAttribute("comments", commentDTOS);
+        return "commentList";
     }
 
     //유저 아이디로 댓글 불러오기
     @GetMapping("/users/{userId}")
-    public ResponseEntity<?> getUserComments(@PathVariable Long userId, Pageable pageable){
+    public String getUserComments(@PathVariable Long userId, Pageable pageable, Model model){
         List<CommentDTO> commentDTOS = commentService.getUserComments(userId, pageable);
-        return ResponseEntity.ok(commentDTOS);
+        model.addAttribute("comments", commentDTOS);
+        return "commentList";
     }
 
 }
