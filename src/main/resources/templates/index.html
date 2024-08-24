@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Music Board</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .header {
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #000;
+        }
+        .content {
+            display: flex;
+            justify-content: space-between;
+        }
+        .board {
+            width: 48%;
+        }
+        .board-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .board-header h2 {
+            margin: 0;
+        }
+        .board-header a {
+            text-decoration: none;
+            color: #000;
+        }
+        .post-list {
+            list-style: none;
+            padding: 0;
+        }
+        .post-list li {
+            text-align: left;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Music Board</h1>
+    <div class="header">
+        <div>
+            <a href="/board/free">자유게시판</a>
+            <a href="/board/market">장터게시판</a>
+            <a href="/api/users/mypage">마이페이지</a>
+            <a href="/login">로그인/로그아웃</a>
+        </div>
+        <div th:if="${username != null and !username.isEmpty()}">
+            <span th:text="${username}"></span>님 반갑습니다.
+        </div>
+        <div th:unless="${username != null and !username.isEmpty()}">
+            로그인해주세요.
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="board">
+            <div class="board-header">
+                <h2>자유게시판</h2>
+                <a href="/board/free">더보기</a>
+            </div>
+            <ul class="post-list">
+                <li th:each="post : ${freeBoardPosts}">
+                    <span th:text="${post.title}">Post Title</span>
+                </li>
+            </ul>
+        </div>
+        <div class="board">
+            <div class="board-header">
+                <h2>장터게시판</h2>
+                <a href="/board/market">더보기</a>
+            </div>
+            <ul class="post-list">
+                <li th:each="post : ${marketBoardPosts}">
+                    <span th:text="${post.title}">Post Title</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

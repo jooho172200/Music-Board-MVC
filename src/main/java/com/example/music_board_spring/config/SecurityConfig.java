@@ -33,7 +33,8 @@ SecurityConfig {
 
                         // 누구나 접근 가능한 경로
                         .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
-
+                        .requestMatchers(HttpMethod.GET, "/api/users/register").permitAll()
+                        .requestMatchers("/boards/**").permitAll()
                         // Admin 전용 권한
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/boards/**").hasRole("ADMIN")
@@ -45,13 +46,13 @@ SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/board/{boardName}/posts/{postId}").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/board/{boardName}/posts/{postId}").authenticated()
                         .requestMatchers("/api/users/{userId}").authenticated()
-
+                        .requestMatchers("/api/users/mypage").authenticated()
                         // 나머지 요청은 모두 허용
                         .anyRequest().permitAll()
 
                 )
                 .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (실제 환경에서는 활성화 권장)
-                .formLogin(formLogin -> formLogin
+                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")// 로그인 페이지 주소
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/")//로그인 성공 시 이동하는 곳
@@ -60,12 +61,12 @@ SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
+                        .logoutSuccessUrl("/")//로그아웃 성공 시 이동하는 곳
                         .permitAll()
                 )
                 .httpBasic(Customizer.withDefaults()) // HTTP Basic 인증 활성화
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 );
         return http.build();
 

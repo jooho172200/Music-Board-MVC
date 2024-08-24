@@ -2,9 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>User Detail</title>
 </head>
 <body>
-
+<h2>User Detail</h2>
+<div>
+    <p>Username: <span th:text="${user.username}">Username</span></p>
+    <p>Email: <span th:text="${user.email}">Email</span></p>
+    <p>Profile Picture: <img th:src="${user.profilePicture}" alt="Profile Picture"></p>
+</div>
+<div>
+    <a th:href="@{/api/users/{userId}/edit(userId=${user.userId})}">회원정보 수정</a>
+</div>
+<div>
+    <a href="/">홈 화면으로 돌아가기</a>
+</div>
 </body>
 </html>

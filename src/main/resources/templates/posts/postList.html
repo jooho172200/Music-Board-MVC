@@ -2,9 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>게시판 글 목록</title>
 </head>
 <body>
-
+<h1 th:text="${boardName} + ' 게시판'">게시판</h1>
+<form action="/board/${boardName}/search" method="get">
+    <input type="text" name="keyword" placeholder="검색어를 입력하세요">
+    <button type="submit">검색</button>
+</form>
+<button onclick="location.href='/board/${boardName}/posts/new'">글쓰기</button>
+<ul>
+    <li th:each="post : ${posts}">
+        <a th:href="@{/board/{boardName}/posts/{postId}(boardName=${boardName}, postId=${post.postId})}" th:text="${post.title}">Post Title</a>
+    </li>
+</ul>
 </body>
 </html>

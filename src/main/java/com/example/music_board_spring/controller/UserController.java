@@ -9,6 +9,7 @@ import com.example.music_board_spring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,16 +22,23 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    // 회원가입 폼
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("registrationDTO", new UserRegistrationDTO());
+        return "users/registerForm";
+    }
+
     //회원가입
     @PostMapping("/register")
     public String registerUser(@ModelAttribute UserRegistrationDTO registrationDTO, Model model) {
         try {
             Users user = userService.registerUser(registrationDTO);
             model.addAttribute("user", user);
-            return "userDetail";
+            return "users/userDetail";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
-            return "registerForm";
+            return "users/registerForm";
         }
     }
 
@@ -55,7 +63,7 @@ public class UserController {
                     .orElseThrow(() -> new UserNotFoundException("ID가 " + userId + "인 사용자를 찾을 수 없습니다."));
             model.addAttribute("user", user);
 
-            return "userDetail";
+            return "users/userDetail";
 
         } catch (UserNotFoundException e) {
 
@@ -69,7 +77,21 @@ public class UserController {
     public String getAllUsers(Model model) {
         List<Users> users = userService.findAll();
         model.addAttribute("users", users);
-        return "userList";
+        return "users/userList";
+    }
+
+    //화원 정보 수정 폼
+    @GetMapping("/{userId}/edit")
+    public String showUpdateUserForm(@PathVariable Long userId, Model model) {
+        try {
+            Users user = userService.findById(userId)
+                    .orElseThrow(() -> new UserNotFoundException("ID가 " + userId + "인 사용자를 찾을 수 없습니다."));
+            model.addAttribute("user", user);
+            return "users/updateForm";
+        } catch (UserNotFoundException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
     }
 
     //유저 정보 수정
@@ -79,14 +101,14 @@ public class UserController {
             Users updatedUser = userService.updateUserInfo(userId, updateDTO);
             model.addAttribute("user", updatedUser);
 
-            return "userDetail";
+            return "users/userDetail";
 
         } catch (UserNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "error";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
-            return "updateForm";
+            return "users/updateForm";
         }
     }
 
@@ -109,7 +131,7 @@ public class UserController {
         try {
             Users activatedUser = userService.activateUser(userId);
             model.addAttribute("user", activatedUser);
-            return "userDetail";
+            return "users/userDetail";
 
         } catch (UserNotFoundException e) {
             model.addAttribute("error", e.getMessage());
@@ -123,12 +145,23 @@ public class UserController {
         try {
             Users deactivatedUser = userService.deactivateUser(userId);
             model.addAttribute("user", deactivatedUser);
-            return "userDetail";
+            return "users/userDetail";
 
         } catch (UserNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "error";
         }
+    }
+
+    //인증된 사용자의 마이페이지 불러오기
+    @GetMapping("/mypage")
+    public String getMyPage(Authentication authentication, Model model) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            Users user = (Users) authentication.getPrincipal();
+            model.addAttribute("user", user);
+            return "users/userDetail";
+        }
+        return "redirect:/login";
     }
 
 }
