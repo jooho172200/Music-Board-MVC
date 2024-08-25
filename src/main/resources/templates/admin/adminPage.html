@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .header {
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #000;
+        }
+        .content {
+            margin-top: 20px;
+        }
+        .board-list {
+            list-style: none;
+            padding: 0;
+        }
+        .board-list li {
+            text-align: left;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .board-list .actions {
+            display: flex;
+            gap: 10px;
+        }
+        .create-button {
+            background-color: #32CD32; /* 연두색 */
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+        .delete-button {
+            background-color: #f00; /* 빨간색 */
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>관리자 페이지</h1>
+    <br>
+    <h2>유저 설정</h2>
+    <div class="header">
+        <a href="">유저 활성화</a>
+        <a href="">유저 비활성화</a>
+        <a href="">유저 삭제</a>
+    </div>
+    <br>
+    <h2>신고 처리</h2>
+    <div class="header">
+        <a href="">신고 받은 게시글</a>
+        <a href="">신고 받은 댓글</a>
+    </div>
+    <br>
+    <div class="content">
+        <div class="header">
+            <h2>게시판 목록</h2>
+            <a th:href="@{/boards/new}" class="create-button">생성</a>
+        </div>
+        <ul class="board-list">
+            <li th:each="board : ${boards}">
+                <span th:text="${board.displayName}">게시판 이름</span>
+                <div class="actions">
+                    <a th:href="@{/boards/{boardName}/update(boardName=${board.boardName})}">수정</a>
+                    <form th:action="@{/boards/delete/{boardName}(boardName=${board.boardName})}" method="post" style="display:inline;">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" class="delete-button">삭제</button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <br>
+    <div>
+        <a href="/">메인 페이지로 돌아가기</a>
+    </div>
+</div>
+</body>
+</html>
