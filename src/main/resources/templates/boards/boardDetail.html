@@ -2,9 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Board Detail</title>
+    <style>
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .post-list {
+            list-style: none;
+            padding: 0;
+        }
+        .post-list li {
+            margin: 10px 0;
+        }
+        .search-create {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .search-create form {
+            flex-grow: 1;
+        }
+        .search-create button {
+            margin-left: 20px;
+        }
+    </style>
 </head>
 <body>
-
+<div class="container">
+    <div class="header">
+        <h1 th:text="${board.displayName}">Board Name</h1>
+    </div>
+    <ul class="post-list">
+        <li th:each="post : ${posts}">
+            <a th:href="@{/board/{boardName}/posts/{postId}(boardName=${board.boardName}, postId=${post.id})}" th:text="${post.title}">Post Title</a>
+        </li>
+    </ul>
+    <div class="search-create">
+        <form action="#" method="get">
+            <input type="text" name="search" placeholder="Search posts...">
+            <button type="submit">Search</button>
+        </form>
+        <a th:href="@{/board/{boardName}/posts/new(boardName=${board.boardName})}">
+            <button>Create Post</button>
+        </a>
+    </div>
+</div>
 </body>
 </html>

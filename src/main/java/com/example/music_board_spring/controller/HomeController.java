@@ -1,6 +1,7 @@
 package com.example.music_board_spring.controller;
 
 import com.example.music_board_spring.model.dto.PostDTO;
+import com.example.music_board_spring.model.entity.Users;
 import com.example.music_board_spring.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,9 @@ public class HomeController {
         model.addAttribute("marketBoardPosts", marketBoardPosts);
 
         if (authentication != null && authentication.isAuthenticated()) {
-            model.addAttribute("username", authentication.getName());
+            Users user = (Users) authentication.getPrincipal();
+            model.addAttribute("username", user.getUsername());
+            model.addAttribute("isAdmin", user.isAdmin());      //관리자 계정인지 확인
         }
 
         return "index";

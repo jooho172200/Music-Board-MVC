@@ -58,9 +58,11 @@
     <h1>Music Board</h1>
     <div class="header">
         <div>
-            <a href="/board/free">자유게시판</a>
-            <a href="/board/market">장터게시판</a>
-            <a href="/api/users/mypage">마이페이지</a>
+            <a href="/boards/free">자유게시판</a>
+            <a href="/boards/market">장터게시판</a>
+            <a href="/boards">게시판 모두 보기</a>
+            <a th:if="${isAdmin}" href="/admin">관리자 페이지</a>
+            <a th:unless="${isAdmin}"href="/users/mypage">마이페이지</a>
             <a href="/login">로그인/로그아웃</a>
         </div>
         <div th:if="${username != null and !username.isEmpty()}">
@@ -70,12 +72,12 @@
             로그인해주세요.
         </div>
     </div>
-
+    <br>
     <div class="content">
         <div class="board">
             <div class="board-header">
                 <h2>자유게시판</h2>
-                <a href="/board/free">더보기</a>
+                <a href="/boards/free">더보기</a>
             </div>
             <ul class="post-list">
                 <li th:each="post : ${freeBoardPosts}">
@@ -86,7 +88,7 @@
         <div class="board">
             <div class="board-header">
                 <h2>장터게시판</h2>
-                <a href="/board/market">더보기</a>
+                <a href="/boards/market">더보기</a>
             </div>
             <ul class="post-list">
                 <li th:each="post : ${marketBoardPosts}">

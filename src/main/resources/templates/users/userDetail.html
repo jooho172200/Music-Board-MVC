@@ -12,7 +12,7 @@
     <p>Profile Picture: <img th:src="${user.profilePicture}" alt="Profile Picture"></p>
 </div>
 <div>
-    <a th:href="@{/api/users/{userId}/edit(userId=${user.userId})}">회원정보 수정</a>
+    <a th:href="@{/users/{userId}/edit(userId=${user.userId})}">회원정보 수정</a>
 </div>
 <div>
     <a href="/">홈 화면으로 돌아가기</a>

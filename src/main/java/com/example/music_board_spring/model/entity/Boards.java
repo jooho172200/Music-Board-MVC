@@ -18,4 +18,7 @@ public class Boards {
 
     @Column(name = "board_name", nullable = false, length = 50)
     private String boardName;
+
+    @Column(name = "display_name", nullable = false, length = 50)
+    private String displayName;
 }
