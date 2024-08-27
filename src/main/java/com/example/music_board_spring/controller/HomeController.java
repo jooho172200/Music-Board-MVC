@@ -21,8 +21,8 @@ public class HomeController {
     //메인 화면
     @GetMapping("/")
     public String showHomePage(Model model, Authentication authentication) {
-        List<PostDTO> freeBoardPosts = postService.getAllPostsByBoardName("free", Pageable.unpaged());
-        List<PostDTO> marketBoardPosts = postService.getAllPostsByBoardName("market", Pageable.unpaged());
+        List<? extends PostDTO> freeBoardPosts = postService.getAllPostsByBoardName("free", Pageable.unpaged());
+        List<? extends PostDTO> marketBoardPosts = postService.getAllPostsByBoardName("market", Pageable.unpaged());
 
         model.addAttribute("freeBoardPosts", freeBoardPosts);
         model.addAttribute("marketBoardPosts", marketBoardPosts);

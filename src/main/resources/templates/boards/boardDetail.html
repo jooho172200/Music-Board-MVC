@@ -1,25 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Board Detail</title>
+    <title th:text="${board.displayName}">Board Name</title>
     <style>
         .container {
-            width: 80%;
+            max-width: 800px;
             margin: 0 auto;
         }
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
             margin-bottom: 20px;
-        }
-        .post-list {
-            list-style: none;
-            padding: 0;
-        }
-        .post-list li {
-            margin: 10px 0;
         }
         .search-create {
             display: flex;
@@ -30,8 +21,40 @@
         .search-create form {
             flex-grow: 1;
         }
-        .search-create button {
+        .create-button {
             margin-left: 20px;
+        }
+        .create-button button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .create-button button:hover {
+            background-color: #45a049;
+        }
+        .post-list {
+            list-style: none;
+            padding: 0;
+        }
+        .post-list li {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        .post-title {
+            flex-grow: 1;
+        }
+        .post-username {
+            margin-left: 20px; /* Add spacing between title and username */
+        }
+        .post-createdAt {
+            margin-left: 20px; /* Add spacing between username and createdAt */
         }
     </style>
 </head>
@@ -40,19 +63,35 @@
     <div class="header">
         <h1 th:text="${board.displayName}">Board Name</h1>
     </div>
-    <ul class="post-list">
-        <li th:each="post : ${posts}">
-            <a th:href="@{/board/{boardName}/posts/{postId}(boardName=${board.boardName}, postId=${post.id})}" th:text="${post.title}">Post Title</a>
-        </li>
-    </ul>
+
+    <div th:if="${posts != null and !posts.isEmpty()}">
+        <ul class="post-list">
+            <li th:each="post : ${posts}">
+                <a class="post-title" th:href="@{/board/{boardName}/posts/{postId}(boardName=${boardName}, postId=${post.postId})}"
+                   th:text="${post.title}">Post Title</a>
+                <span class="post-username" th:text="${post.username}">Username</span>
+                <span class="post-createdAt" th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">Created At</span>
+            </li>
+        </ul>
+    </div>
+    <div th:if="${posts == null or posts.isEmpty()}">
+        <p>게시글이 없습니다.</p>
+    </div>
+
     <div class="search-create">
         <form action="#" method="get">
-            <input type="text" name="search" placeholder="Search posts...">
+            <input type="text" name="search" placeholder="Search">
             <button type="submit">Search</button>
         </form>
-        <a th:href="@{/board/{boardName}/posts/new(boardName=${board.boardName})}">
-            <button>Create Post</button>
-        </a>
+        <div class="create-button">
+            <a th:href="@{/board/{boardName}/posts/new(boardName=${boardName})}">
+                <button type="button">게시글 작성</button>
+            </a>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <a href="/">메인 페이지로 돌아가기</a>
     </div>
 </div>
 </body>

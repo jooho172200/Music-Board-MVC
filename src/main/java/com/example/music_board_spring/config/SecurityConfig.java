@@ -42,6 +42,7 @@ SecurityConfig {
 
                         // 인증된 사용자 권한
                         .requestMatchers("/board/{boardName}/posts").authenticated()
+                        .requestMatchers("/board/{boardName}/posts/new").authenticated()
                         .requestMatchers("/posts/{postId}/comments").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/board/{boardName}/posts/{postId}").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/board/{boardName}/posts/{postId}").authenticated()

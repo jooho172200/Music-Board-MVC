@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class PostDTO {
     private Long postId;
     private Long userId;
+    private String username;
     private Integer boardId;
     private String title;
     private String content;
@@ -20,4 +21,5 @@ public class PostDTO {
     private Timestamp updatedAt;
     private String filename;
     private String filepath;
+
 }

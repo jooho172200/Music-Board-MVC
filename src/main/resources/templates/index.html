@@ -50,6 +50,17 @@
         .post-list li {
             text-align: left;
             margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .post-title {
+            flex-grow: 1;
+        }
+        .post-username {
+            margin-left: 20px; /* Add spacing between title and username */
+        }
+        .post-createdAt {
+            margin-left: 20px; /* Add spacing between username and createdAt */
         }
     </style>
 </head>
@@ -62,7 +73,7 @@
             <a href="/boards/market">장터게시판</a>
             <a href="/boards">게시판 모두 보기</a>
             <a th:if="${isAdmin}" href="/admin">관리자 페이지</a>
-            <a th:unless="${isAdmin}"href="/users/mypage">마이페이지</a>
+            <a th:unless="${isAdmin}" href="/users/mypage">마이페이지</a>
             <a href="/login">로그인/로그아웃</a>
         </div>
         <div th:if="${username != null and !username.isEmpty()}">
@@ -81,7 +92,9 @@
             </div>
             <ul class="post-list">
                 <li th:each="post : ${freeBoardPosts}">
-                    <span th:text="${post.title}">Post Title</span>
+                    <a class="post-title" th:href="@{/board/free/posts/{postId}(postId=${post.postId})}" th:text="${post.title}">Post Title</a>
+                    <span class="post-username" th:text="${post.username}">Username</span>
+                    <span class="post-createdAt" th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">Created At</span>
                 </li>
             </ul>
         </div>
@@ -92,7 +105,9 @@
             </div>
             <ul class="post-list">
                 <li th:each="post : ${marketBoardPosts}">
-                    <span th:text="${post.title}">Post Title</span>
+                    <a class="post-title" th:href="@{/board/market/posts/{postId}(postId=${post.postId})}" th:text="${post.title}">Post Title</a>
+                    <span class="post-username" th:text="${post.username}">Username</span>
+                    <span class="post-createdAt" th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">Created At</span>
                 </li>
             </ul>
         </div>

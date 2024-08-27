@@ -1,10 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="${post.title}">Post Title</title>
 </head>
 <body>
+<h1 th:text="${post.title}">Post Title</h1>
 
+<p>작성자: <span th:text="${post.username}">Username</span></p>
+<p>작성일: <span th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">Created At</span></p>
+
+<p th:if="${isMarket}">가격: <span th:text="${#numbers.formatDecimal(post.price, 0, 'COMMA', 2, 'POINT')}">0.00</span></p>
+
+<p th:text="${post.content}">Post Content</p>
+
+<div th:if="${post.filename}">
+    <p>첨부 파일:</p>
+    <a th:href="@{${post.filepath}}" th:text="${post.filename}">Download</a>
+</div>
+<div th:if="${post.filepath}">
+    <img th:src="@{${post.filepath}}" alt="Attached Image" style="max-width: 100%;">
+</div>
+
+<a th:href="@{/boards/{boardName}(boardName=${boardName})}">게시판으로 돌아가기</a>
 </body>
 </html>

@@ -1,9 +1,12 @@
 package com.example.music_board_spring.controller;
 
 import com.example.music_board_spring.model.dto.BoardDTO;
+import com.example.music_board_spring.model.dto.PostDTO;
 import com.example.music_board_spring.model.entity.Boards;
 import com.example.music_board_spring.service.BoardService;
+import com.example.music_board_spring.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,7 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
+    private final PostService postService;
 
     //게시판 생성 폼
     @GetMapping("/new")
@@ -69,11 +73,22 @@ public class BoardController {
     }
 
     //게시판 이름으로 게시판 조회
+//    @GetMapping("/{boardName}")
+//    public String findByBoardName(@PathVariable String boardName, Model model){
+//        Boards board = boardService.findbyBoardName(boardName)
+//                .orElseThrow(() -> new RuntimeException("게시판을 찾을 수 없습니다."));
+//        model.addAttribute("board", board);
+//        return "boards/boardDetail";
+//    }
     @GetMapping("/{boardName}")
-    public String findByBoardName(@PathVariable String boardName, Model model){
+    public String findByBoardName(@PathVariable String boardName, Model model, Pageable pageable){
         Boards board = boardService.findbyBoardName(boardName)
                 .orElseThrow(() -> new RuntimeException("게시판을 찾을 수 없습니다."));
+        List<? extends PostDTO> posts = postService.getAllPostsByBoardName(boardName, pageable);
         model.addAttribute("board", board);
+        model.addAttribute("posts", posts);
+        model.addAttribute("boardName", boardName);
+        model.addAttribute("isMarket", "market".equals(boardName));
         return "boards/boardDetail";
     }
 
